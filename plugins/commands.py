@@ -94,7 +94,7 @@ async def start(client, message):
         btn = [[
             InlineKeyboardButton("❆ Jᴏɪɴ Uᴘᴅᴀᴛᴇ Cʜᴀɴɴᴇʟ ❆", url=invite_link.invite_link)
         ]]
-        if message.command[1] != "subscribe" and REQUEST_TO_JOIN_MODE == False:
+        if message.command[1] != "subscribe" and TRY_AGAIN_BTN == True:
             try:
                 kk, file_id = message.command[1].split("_", 1)
                 btn.append([InlineKeyboardButton("↻ Tʀʏ Aɢᴀɪɴ", callback_data=f"checksub#{kk}#{file_id}")])
