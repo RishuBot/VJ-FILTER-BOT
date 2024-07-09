@@ -39,6 +39,10 @@ class TechVJXBot(Client):
             plugins={"root": "plugins"},
             sleep_threshold=5,
         )
+
+    async def set_self(self):
+        temp.BOT = self
+    
     async def iter_messages(
         self,
         chat_id: Union[int, str],
