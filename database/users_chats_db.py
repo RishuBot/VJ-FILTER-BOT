@@ -71,6 +71,7 @@ class Database:
         self.col = self.db.users
         self.grp = self.db.groups
         self.users = self.db.uersz
+        self.bot = self.db.clone_bots
 
 
     def new_user(self, id, name):
@@ -110,6 +111,31 @@ class Database:
     async def total_users_count(self):
         count = await self.col.count_documents({})
         return count
+
+    async def add_clone_bot(self, bot_id, user_id):
+        settings = {
+            'bot_id': bot_id,
+            'user_id': user_id,
+            'url': None,
+            'api': None,
+            'tutorial': None,
+            'update_channel_link': None
+        }
+        await self.bot.insert_one(settings)
+
+    async def is_clone_exist(self, user_id):
+        clone = await self.bot.find_one({'user_id': int(user_id)})
+        return bool(clone)
+
+    async def delete_clone(self, user_id):
+        await self.bot.delete_many({'user_id': int(user_id)})
+
+    async def get_clone(self, user_id):
+        clone_data = await self.bot.find_one({"user_id": user_id})
+        return clone_data
+            
+    async def update_clone(self, user_id, user_data):
+        await self.bot.update_one({"user_id": user_id}, {"$set": user_data}, upsert=True)
     
     async def remove_ban(self, id):
         ban_status = dict(
