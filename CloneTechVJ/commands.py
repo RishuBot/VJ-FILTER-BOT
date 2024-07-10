@@ -213,7 +213,7 @@ async def settings(client, message):
         await message.reply("**Invalid Link. Start The Process Again By - /settings**")
         return 
     link = await client.ask(message.chat.id, "<b>Now Send Me Your Update Channel Link Which Is Shown In Your Start Button And Below File Button.</b>")
-    if not tutorial.text.startswith(('https://', 'http://')):
+    if not link.text.startswith(('https://', 'http://')):
         await message.reply("**Invalid Link. Start The Process Again By - /settings**")
         return 
     data = {
