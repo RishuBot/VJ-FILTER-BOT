@@ -479,6 +479,13 @@ def humanbytes(size):
         n += 1
     return str(round(size, 2)) + " " + Dic_powerN[n] + 'B'
 
+
+
+async def get_clone_shortlink(link, url, api):
+    shortzy = Shortzy(api_key=api, base_site=url)
+    link = await shortzy.convert(link)
+    return link
+                           
 async def get_shortlink(chat_id, link):
     settings = await get_settings(chat_id) #fetching settings for group
     if 'shortlink' in settings.keys():
