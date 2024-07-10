@@ -19,5 +19,8 @@ class Database:
         count = await self.db[str(bot_id)].count_documents({})
         return count
 
+    async def get_all_users(self, bot_id):
+        return self.db[str(bot_id)].find({})
+
 
 clonedb = Database(CLONE_DATABASE_URI, DATABASE_NAME)
