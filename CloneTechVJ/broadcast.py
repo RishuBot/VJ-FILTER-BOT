@@ -16,7 +16,7 @@ async def pm_broadcast(bot, message):
         return 
     b_msg = await bot.ask(chat_id = message.from_user.id, text = "Now Send Me Your Broadcast Message")
     try:
-        users = await db.get_all_users()
+        users = await clonedb.get_all_users()
         sts = await message.reply_text('Broadcasting your messages...')
         start_time = time.time()
         total_users = await clonedb.total_users_count(me.id)
