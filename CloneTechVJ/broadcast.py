@@ -5,6 +5,7 @@
 import datetime, time, asyncio
 from pyrogram import Client, filters
 from database.users_chats_db import db
+from CloneTechVJ.database.clone_bot_userdb import clonedb
 from utils import broadcast_messages
         
 @Client.on_message(filters.command("broadcast"))
@@ -18,7 +19,7 @@ async def pm_broadcast(bot, message):
         users = await db.get_all_users()
         sts = await message.reply_text('Broadcasting your messages...')
         start_time = time.time()
-        total_users = await clonedb.total_users_count()
+        total_users = await clonedb.total_users_count(me.id)
         done = 0
         blocked = 0
         deleted = 0
