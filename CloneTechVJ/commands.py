@@ -8,7 +8,7 @@ from pyrogram import Client, filters, enums
 from pyrogram.errors import ChatAdminRequired, FloodWait
 from pyrogram.types import *
 from database.ia_filterdb import Media, get_file_details, unpack_new_file_id, get_bad_files
-from database.users_chats_db import db
+from CloneTechVJ.database.clone_bot_userdb import clonedb
 from info import *
 from utils import get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, get_seconds
 logger = logging.getLogger(__name__)
@@ -21,13 +21,10 @@ async def start(client, message):
             InlineKeyboardButton('⤬ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ⤬', url=f'http://t.me/{me.username}?startgroup=true')
         ]]
         reply_markup = InlineKeyboardMarkup(buttons)
-        await message.reply(script.START_TXT.format(message.from_user.mention if message.from_user else message.chat.title, me.username, me.first_name), reply_markup=reply_markup, disable_web_page_preview=True)
-        await asyncio.sleep(2) # 😬 wait a bit, before checking.
-        if not await db.get_chat(message.chat.id):
-            await db.add_chat(message.chat.id, message.chat.title)
+        await message.reply(script.START_TXT.format(message.from_user.mention if message.from_user else message.chat.title, me.username, me.first_name), reply_markup=reply_markup)
         return 
-    if not await db.is_user_exist(message.from_user.id):
-        await db.add_user(message.from_user.id, message.from_user.first_name)
+    if not await clonedb.is_user_exist(me.id, message.from_user.id):
+        await clonedb.add_user(me.id, message.from_user.id)
     if len(message.command) != 2:
         buttons = [[
             InlineKeyboardButton('⤬ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ⤬', url=f'http://t.me/{me.username}?startgroup=true')
