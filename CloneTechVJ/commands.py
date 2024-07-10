@@ -196,6 +196,9 @@ async def start(client, message):
 @Client.on_message(filters.command("settings") & filters.private)
 async def settings(client, message):
     me = await client.get_me()
+    owner = await db.get_bot(me.id)
+    if owner["user_id"] != message.from_user.id:
+        return
     url = await client.ask(message.chat.id, "<b>Now Send Me Your Shortlink Site Domain Or Url Without https://</b>")
     api = await client.ask(message.chat.id, "<b>Now Send Your Api</b>")
     try:
