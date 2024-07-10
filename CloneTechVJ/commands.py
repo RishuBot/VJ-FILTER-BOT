@@ -8,18 +8,22 @@ from pyrogram import Client, filters, enums
 from pyrogram.errors import ChatAdminRequired, FloodWait
 from pyrogram.types import *
 from database.ia_filterdb import Media, get_file_details, unpack_new_file_id, get_bad_files
+from database.users_chats_db import db
 from CloneTechVJ.database.clone_bot_userdb import clonedb
 from info import *
-from utils import get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, get_seconds
+from utils import get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, get_seconds, get_clone_shortlink
 logger = logging.getLogger(__name__)
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
     me = await client.get_me()
+    cd = await db.get_bot(me.id)
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
         buttons = [[
             InlineKeyboardButton('⤬ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ⤬', url=f'http://t.me/{me.username}?startgroup=true')
         ]]
+        if cd["update_channel_link"] != None:
+            buttons.append([[InlineKeyboardButton('🍿 Join Update Channel 🍿', url=f'{cd["update_channel_link"]}')]])
         reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply(script.START_TXT.format(message.from_user.mention if message.from_user else message.chat.title, me.username, me.first_name), reply_markup=reply_markup)
         return 
@@ -29,6 +33,8 @@ async def start(client, message):
         buttons = [[
             InlineKeyboardButton('⤬ Aᴅᴅ Mᴇ Tᴏ Yᴏᴜʀ Gʀᴏᴜᴘ ⤬', url=f'http://t.me/{me.username}?startgroup=true')
         ]]
+        if cd["update_channel_link"] != None:
+            buttons.append([[InlineKeyboardButton('🍿 Join Update Channel 🍿', url=f'{cd["update_channel_link"]}')]])
         reply_markup = InlineKeyboardMarkup(buttons)
         m=await message.reply_sticker("CAACAgUAAxkBAAEKVaxlCWGs1Ri6ti45xliLiUeweCnu4AACBAADwSQxMYnlHW4Ls8gQMAQ") 
         await asyncio.sleep(1)
@@ -49,11 +55,11 @@ async def start(client, message):
         chat_id = int("-" + file_id.split("-")[1])
         userid = message.from_user.id if message.from_user else None
         settings = await get_settings(chat_id)
-        g = await get_shortlink(chat_id, f"https://telegram.me/{me.username}?start=allfiles_{file_id}")
+        g = await get_clone_shortlink(f"https://telegram.me/{me.username}?start=allfiles_{file_id}", cd["url"], cd["api"])
         btn = [[
             InlineKeyboardButton('📂 Dᴏᴡɴʟᴏᴀᴅ Nᴏᴡ 📂', url=g)
         ],[
-            InlineKeyboardButton('⁉️ Hᴏᴡ Tᴏ Dᴏᴡɴʟᴏᴀᴅ ⁉️', url=await get_tutorial(chat_id))
+            InlineKeyboardButton('⁉️ Hᴏᴡ Tᴏ Dᴏᴡɴʟᴏᴀᴅ ⁉️', url=f"{cd["tutorial"]}")
         ]]
         k = await client.send_message(chat_id=message.from_user.id,text=f"<b>Get All Files in a Single Click!!!\n\n📂 ʟɪɴᴋ ➠ : {g}\n\n<i>Note: This message is deleted in 5 mins to avoid copyrights. Save the link to Somewhere else</i></b>", reply_markup=InlineKeyboardMarkup(btn))
         await asyncio.sleep(300)
@@ -63,14 +69,13 @@ async def start(client, message):
     
     elif data.startswith("short"):
         user = message.from_user.id
-        chat_id = temp.SHORT.get(user)
         files_ = await get_file_details(file_id)
         files = files_[0]
-        g = await get_shortlink(chat_id, f"https://telegram.me/{me.username}?start=file_{file_id}")
+        g = await get_clone_shortlink(f"https://telegram.me/{me.username}?start=file_{file_id}", cd["url"], cd["api"]) 
         btn = [[
             InlineKeyboardButton('📂 Dᴏᴡɴʟᴏᴀᴅ Nᴏᴡ 📂', url=g)
         ],[
-            InlineKeyboardButton('⁉️ Hᴏᴡ Tᴏ Dᴏᴡɴʟᴏᴀᴅ ⁉️', url=await get_tutorial(chat_id))
+            InlineKeyboardButton('⁉️ Hᴏᴡ Tᴏ Dᴏᴡɴʟᴏᴀᴅ ⁉️', url=f"{cd["tutorial"]}")
         ]]
         k = await client.send_message(chat_id=user,text=f"<b>📕Nᴀᴍᴇ ➠ : <code>{files.file_name}</code> \n\n🔗Sɪᴢᴇ ➠ : {get_size(files.file_size)}\n\n📂Fɪʟᴇ ʟɪɴᴋ ➠ : {g}\n\n<i>Note: This message is deleted in 20 mins to avoid copyrights. Save the link to Somewhere else</i></b>", reply_markup=InlineKeyboardMarkup(btn))
         await asyncio.sleep(1200)
@@ -105,22 +110,15 @@ async def start(client, message):
             await x.delete()
         await k.edit_text("<b>Your All Files/Videos is successfully deleted!!!</b>")
         return    
-        
     elif data.startswith("files"):
-        user = message.from_user.id
-        if temp.SHORT.get(user)==None:
-            await message.reply_text(text="<b>Please Search Again in Group</b>")
-        else:
-            chat_id = temp.SHORT.get(user)
-        settings = await get_settings(chat_id)
-        if settings['is_shortlink'] and not await db.has_premium_access(user):
+        if cd['url']:
             files_ = await get_file_details(file_id)
             files = files_[0]
-            g = await get_shortlink(chat_id, f"https://telegram.me/{temp.U_NAME}?start=file_{file_id}")
+            g = await get_clone_shortlink(f"https://telegram.me/{me.username}?start=file_{file_id}", cd["url"], cd["api"])
             btn = [[
                 InlineKeyboardButton('📂 Dᴏᴡɴʟᴏᴀᴅ Nᴏᴡ 📂', url=g)
             ],[
-                InlineKeyboardButton('⁉️ Hᴏᴡ Tᴏ Dᴏᴡɴʟᴏᴀᴅ ⁉️', url=await get_tutorial(chat_id))
+                InlineKeyboardButton('⁉️ Hᴏᴡ Tᴏ Dᴏᴡɴʟᴏᴀᴅ ⁉️', url=f"{cd["tutorial"]}")
             ]]
             k = await client.send_message(chat_id=message.from_user.id,text=f"<b>📕Nᴀᴍᴇ ➠ : <code>{files.file_name}</code> \n\n🔗Sɪᴢᴇ ➠ : {get_size(files.file_size)}\n\n📂Fɪʟᴇ ʟɪɴᴋ ➠ : {g}\n\n<i>Note: This message is deleted in 20 mins to avoid copyrights. Save the link to Somewhere else</i></b>", reply_markup=InlineKeyboardMarkup(btn))
             await asyncio.sleep(1200)
