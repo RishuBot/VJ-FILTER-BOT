@@ -11,6 +11,7 @@ from database.ia_filterdb import Media, get_file_details, unpack_new_file_id, ge
 from database.users_chats_db import db
 from CloneTechVJ.database.clone_bot_userdb import clonedb
 from info import *
+from shortzy import Shortzy
 from utils import get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, get_seconds, get_clone_shortlink
 logger = logging.getLogger(__name__)
 
@@ -192,3 +193,31 @@ async def start(client, message):
     await k.edit_text("<b>Your File/Video is successfully deleted!!!</b>")
     return   
   
+@Client.on_message(filters.command("settings") & filters.private)
+async def settings(client, message):
+    me = await client.get_me()
+    url = await client.ask(message.chat.id, "<b>Now Send Me Your Shortlink Site Domain Or Url Without https://</b>")
+    api = await client.ask(message.chat.id, "<b>Now Send Your Api</b>")
+    try:
+        shortzy = Shortzy(api_key=api.text, base_site=url.text)
+        link = 'https://t.me/VJ_Botz'
+        await shortzy.convert(link)
+    except Exception as e:
+        await message.reply(f"**Error In Converting Link**\n\n<code>{e}</code>\n\n**Start The Process Again By - /settings**", reply_markup=InlineKeyboardMarkup(btn))
+        return
+    tutorial = await client.ask(message.chat.id, "<b>Now Send Me Your How To Open Link means Tutorial Link.</b>")
+    if not tutorial.text.startswith(('https://', 'http://')):
+        await message.reply("**Invalid Link. Start The Process Again By - /settings**")
+        return 
+    link = await client.ask(message.chat.id, "<b>Now Send Me Your Update Channel Link Which Is Shown In Your Start Button And Below File Button.</b>")
+    if not tutorial.text.startswith(('https://', 'http://')):
+        await message.reply("**Invalid Link. Start The Process Again By - /settings**")
+        return 
+    data = {
+        'url': url.text,
+        'api': api.text,
+        'tutorial': tutorial.text,
+        'update_channel_link': link.text
+    }
+    await db.update_bot(me.id, data)
+    await message.reply("**Successfully Added All Settings**")
