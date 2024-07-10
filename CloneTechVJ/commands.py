@@ -96,12 +96,20 @@ async def start(client, message):
             f_caption=files1.caption
             if f_caption is None:
                 f_caption = f"{' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files1.file_name.split()))}"
+            if cd["update_channel_link"] != None:
+                button = [[
+                    InlineKeyboardButton('🍿 Join Update Channel 🍿', url=f'{cd["update_channel_link"]}')
+                ]]
+                reply_markup=InlineKeyboardMarkup(button)
+            else:
+                reply_markup=None
+       
             msg = await client.send_cached_media(
                 chat_id=message.from_user.id,
                 file_id=file_id,
                 caption=f_caption,
-                protect_content=True if pre == 'filep' else False
-               # reply_markup=InlineKeyboardMarkup(button)
+                protect_content=True if pre == 'filep' else False,
+                reply_markup=reply_markup
             )
             filesarr.append(msg)
         k = await client.send_message(chat_id = message.from_user.id, text=f"<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie Files/Videos will be deleted in <b><u>10 mins</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this ALL Files/Videos to your Saved Messages and Start Download there</i></b>")
@@ -129,11 +137,18 @@ async def start(client, message):
     if not files_:
         pre, file_id = ((base64.urlsafe_b64decode(data + "=" * (-len(data) % 4))).decode("ascii")).split("_", 1)
         try:
+            if cd["update_channel_link"] != None:
+                button = [[
+                    InlineKeyboardButton('🍿 Join Update Channel 🍿', url=f'{cd["update_channel_link"]}')
+                ]]
+                reply_markup=InlineKeyboardMarkup(button)
+            else:
+                reply_markup=None
             msg = await client.send_cached_media(
                 chat_id=message.from_user.id,
                 file_id=file_id,
-                protect_content=True if pre == 'filep' else False
-              #  reply_markup=InlineKeyboardMarkup(button)
+                protect_content=True if pre == 'filep' else False,
+                reply_markup=reply_markup
             )
             filetype = msg.media
             file = getattr(msg, filetype.value)
@@ -141,8 +156,8 @@ async def start(client, message):
             size=get_size(file.file_size)
             f_caption = f"<code>{title}</code>"
             await msg.edit_caption(
-                caption=f_caption
-              #  reply_markup=InlineKeyboardMarkup(button)
+                caption=f_caption,
+                reply_markup=reply_markup
             )
             k = await msg.reply("<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie File/Video will be deleted in <b><u>10 mins</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</i></b>",quote=True)
             await asyncio.sleep(600)
@@ -158,12 +173,19 @@ async def start(client, message):
     f_caption=files.caption
     if f_caption is None:
         f_caption = f"@VJ_Botz  {' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files.file_name.split()))}"
+    if cd["update_channel_link"] != None:
+        button = [[
+            InlineKeyboardButton('🍿 Join Update Channel 🍿', url=f'{cd["update_channel_link"]}')
+        ]]
+        reply_markup=InlineKeyboardMarkup(button)
+    else:
+        reply_markup=None
     msg = await client.send_cached_media(
         chat_id=message.from_user.id,
         file_id=file_id,
         caption=f_caption,
-        protect_content=True if pre == 'filep' else False
-      #  reply_markup=InlineKeyboardMarkup(button)
+        protect_content=True if pre == 'filep' else False,
+        reply_markup=reply_markup
     )
     k = await msg.reply("<b><u>❗️❗️❗️IMPORTANT❗️️❗️❗️</u></b>\n\nThis Movie File/Video will be deleted in <b><u>10 mins</u> 🫥 <i></b>(Due to Copyright Issues)</i>.\n\n<b><i>Please forward this File/Video to your Saved Messages and Start Download there</i></b>",quote=True)
     await asyncio.sleep(600)
