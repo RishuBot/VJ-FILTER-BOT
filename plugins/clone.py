@@ -1,17 +1,14 @@
-from info import API_ID, API_HASH, LOG_CHANNEL
+from info import API_ID, API_HASH, CLONE_MODE, LOG_CHANNEL
 from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, BotCommand
-from utils import temp
 from database.users_chats_db import db
 import re
-import pytz
-from datetime import datetime
-import asyncio
 from Script import script
-import time
 
 @Client.on_message(filters.command('clone'))
 async def clone_menu(client, message):
+    if CLONE_MODE == False:
+        return 
     if await db.is_clone_exist(message.from_user.id):
         return await message.reply("**ʏᴏᴜ ʜᴀᴠᴇ ᴀʟʀᴇᴀᴅʏ ᴄʟᴏɴᴇᴅ ᴀ ʙᴏᴛ ᴅᴇʟᴇᴛᴇ ғɪʀsᴛ ɪᴛ ʙʏ /deleteclone**")
     techvj = await client.ask(message.chat.id, '<b>1) sᴇɴᴅ <code>/newbot</code> ᴛᴏ @BotFather\n2) ɢɪᴠᴇ ᴀ ɴᴀᴍᴇ ꜰᴏʀ ʏᴏᴜʀ ʙᴏᴛ.\n3) ɢɪᴠᴇ ᴀ ᴜɴɪǫᴜᴇ ᴜsᴇʀɴᴀᴍᴇ.\n4) ᴛʜᴇɴ ʏᴏᴜ ᴡɪʟʟ ɢᴇᴛ ᴀ ᴍᴇssᴀɢᴇ ᴡɪᴛʜ ʏᴏᴜʀ ʙᴏᴛ ᴛᴏᴋᴇɴ.\n5) ꜰᴏʀᴡᴀʀᴅ ᴛʜᴀᴛ ᴍᴇssᴀɢᴇ ᴛᴏ ᴍᴇ.\n\n/cancel - ᴄᴀɴᴄᴇʟ ᴛʜɪs ᴘʀᴏᴄᴇss.</b>')
@@ -51,4 +48,8 @@ async def clone_menu(client, message):
 @Client.on_message(filters.command('deleteclone'))
 async def clone_menu(client, message):
     if await db.is_clone_exist(message.from_user.id):
+        await db.delete_clone(message.from_user.id)
+        await message.reply("**sᴜᴄᴄᴇssғᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ʏᴏᴜʀ ᴄʟᴏɴᴇ ʙᴏᴛ, ʏᴏᴜ ᴄᴀɴ ᴄʀᴇᴀᴛᴇ ᴀɢᴀɪɴ ʙʏ /clone**")
+    else:
+        await message.reply("**ɴᴏ ᴄʟᴏɴᴇ ʙᴏᴛ ғᴏᴜɴᴅ**")
         
