@@ -758,6 +758,14 @@ async def cb_handler(client: Client, query: CallbackQuery):
     elif query.data == "pages":
         await query.answer()
 
+    elif query.data == "help":
+        text = "<b>👨‍💻 How To Use Bot :-\n\n🔻 /start - check bot is working or not.\n\n🔻 /stats - check bot files and users.\n\n🔻 /settings - configure clone bot settings ( owner only ).\n\n🔻 /reset - reset all settings to default or none ( owner only ).\n\n🔻 /broadcast - broadcast a message to your bot users ( owner only ).</b>"
+        btn = [[
+            InlineKeyboardButton("🔍 ᴀʙᴏᴜᴛ", callback_data="about"),
+            InlineKeyboardButton("🏡 ʜᴏᴍᴇ", callback_data="start")
+        ]]
+        await query.message.edit_text(text = text, reply_markup = InlineKeyboardMarkup(btn))
+
     if query.data.startswith("file"):
         clicked = query.from_user.id
         try:
