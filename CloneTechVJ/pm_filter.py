@@ -766,6 +766,25 @@ async def cb_handler(client: Client, query: CallbackQuery):
         ]]
         await query.message.edit_text(text = text, reply_markup = InlineKeyboardMarkup(btn))
 
+    elif query.data == "start":
+        buttons = [[
+            InlineKeyboardButton('⤬ ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ ⤬', url=f'http://t.me/{me.username}?startgroup=true')
+        ],[
+            InlineKeyboardButton('🕵️ ʜᴇʟᴘ', callback_data='help'),
+            InlineKeyboardButton('🔍 ᴀʙᴏᴜᴛ', callback_data='about')
+        ]]
+        if settings["update_channel_link"] != None:
+            buttons.append([[InlineKeyboardButton('🍿 ᴊᴏɪɴ ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ 🍿', url=f'{settings["update_channel_link"]}')]])
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await query.message.edit_text(text=script.CLONE_START_TXT.format(query.from_user.mention, me.username, me.first_name), reply_markup=reply_markup)
+
+    elif query.data == "about":
+        btn = [[
+            InlineKeyboardButton('🕵️ ʜᴇʟᴘ', callback_data='help'),
+            InlineKeyboardButton("🏡 ʜᴏᴍᴇ", callback_data="start")
+        ]]
+        await query.message.edit_text(text = script.CLONE_ABOUT_TXT, reply_markup = InlineKeyboardMarkup(btn))
+        
     if query.data.startswith("file"):
         clicked = query.from_user.id
         try:
