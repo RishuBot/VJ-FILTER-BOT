@@ -12,7 +12,7 @@ from database.users_chats_db import db
 from CloneTechVJ.database.clone_bot_userdb import clonedb
 from info import *
 from shortzy import Shortzy
-from utils import get_settings, pub_is_subscribed, get_size, is_subscribed, save_group_settings, temp, get_seconds, get_clone_shortlink
+from utils import get_size, temp, get_seconds, get_clone_shortlink
 logger = logging.getLogger(__name__)
 
 @Client.on_message(filters.command("start") & filters.incoming)
@@ -246,8 +246,9 @@ async def reset_settings(client, message):
         await db.update_bot(me.id, data)
         await message.reply("**Successfully Reset All Settings To Default.**")
 
-@Client.on_message(filters.command("users") & filters.private)
-async def users(client, message):
+@Client.on_message(filters.command("stats") & filters.private)
+async def stats(client, message):
     me = await client.get_me()
     total_users = await clonedb.total_users_count(me.id)
-    await message.reply(f"**Total Users : {total_users}**")
+    total = await Media.count_documents()
+    await message.reply(f"**Total Files : {total}\n\nTotal Users : {total_users}**")
