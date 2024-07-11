@@ -783,7 +783,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             InlineKeyboardButton('🕵️ ʜᴇʟᴘ', callback_data='help'),
             InlineKeyboardButton("🏡 ʜᴏᴍᴇ", callback_data="start")
         ]]
-        await query.message.edit_text(text = script.CLONE_ABOUT_TXT, reply_markup = InlineKeyboardMarkup(btn))
+        await query.message.edit_text(text = script.CLONE_ABOUT_TXT.format(me.mention, temp.U_NAME, temp.B_NAME), reply_markup = InlineKeyboardMarkup(btn))
         
     if query.data.startswith("file"):
         clicked = query.from_user.id
