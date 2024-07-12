@@ -46,4 +46,18 @@ async def delete_clone_menu(client, message):
         await message.reply("**sᴜᴄᴄᴇssғᴜʟʟʏ ᴅᴇʟᴇᴛᴇᴅ ʏᴏᴜʀ ᴄʟᴏɴᴇ ʙᴏᴛ, ʏᴏᴜ ᴄᴀɴ ᴄʀᴇᴀᴛᴇ ᴀɢᴀɪɴ ʙʏ /clone**")
     else:
         await message.reply("**ɴᴏ ᴄʟᴏɴᴇ ʙᴏᴛ ғᴏᴜɴᴅ**")
+
+async def restart_bots():
+    bots = list(mongo_db.bots.find())
+    for bot in bots:
+        bot_token = bot['bot_token']
+        try:
+            vj = Client(
+                f"{bot_token}", API_ID, API_HASH,
+                bot_token=bot_token,
+                plugins={"root": "CloneTechVJ"},
+            )
+            await vj.start()
+        except Exception as e:
+            print(f"Error while restarting bot with token {bot_token}: {e}")
         
