@@ -48,7 +48,7 @@ async def delete_clone_menu(client, message):
         await message.reply("**ɴᴏ ᴄʟᴏɴᴇ ʙᴏᴛ ғᴏᴜɴᴅ**")
 
 async def restart_bots():
-    bots = list(await db.get_all_bots())
+    bots = await db.get_all_bots()
     for bot in bots:
         bot_token = bot['bot_token']
         try:
