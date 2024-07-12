@@ -2,6 +2,8 @@
 # Subscribe YouTube Channel For Amazing Bot @Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
+# Clone Code Credit : YT - @Tech_VJ / TG - @VJ_Bots / GitHub - @VJBots
+
 import datetime, time, asyncio
 from pyrogram import Client, filters
 from database.users_chats_db import db
