@@ -145,7 +145,9 @@ class Database:
     async def update_bot(self, bot_id, bot_data):
         await self.bot.update_one({"bot_id": bot_id}, {"$set": bot_data}, upsert=True)
     
-    
+    async def get_all_bots(self):
+        return self.bot.find({})
+        
     async def remove_ban(self, id):
         ban_status = dict(
             is_banned=False,
