@@ -65,6 +65,7 @@ async def start():
     temp.BANNED_CHATS = b_chats
     await Media.ensure_indexes()
     me = await TechVJBot.get_me()
+    temp.BOT = TechVJBot
     temp.ME = me.id
     temp.U_NAME = me.username
     temp.B_NAME = me.first_name
