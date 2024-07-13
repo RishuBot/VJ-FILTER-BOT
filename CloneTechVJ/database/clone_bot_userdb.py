@@ -22,5 +22,8 @@ class Database:
     async def get_all_users(self, bot_id):
         return self.db[str(bot_id)].find({})
 
+    async def delete_user(self, bot_id, user_id):
+        await self.db[str(bot_id)].delete_many({'user_id': int(user_id)})
+
 
 clonedb = Database(CLONE_DATABASE_URI, DATABASE_NAME)
