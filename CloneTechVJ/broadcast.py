@@ -8,7 +8,6 @@ import datetime, time, asyncio
 from pyrogram import Client, filters
 from database.users_chats_db import db
 from CloneTechVJ.database.clone_bot_userdb import clonedb
-from utils import broadcast_messages
         
 @Client.on_message(filters.command("broadcast"))
 async def pm_broadcast(bot, message):
@@ -57,3 +56,22 @@ async def pm_broadcast(bot, message):
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
+
+async def broadcast_messages(user_id, message):
+    try:
+        await message.copy(chat_id=user_id)
+        return True, "Success"
+    except FloodWait as e:
+        await asyncio.sleep(e.x)
+        return await broadcast_messages(user_id, message)
+    except InputUserDeactivated:
+        await clonedb.delete_user(int(user_id))
+        return False, "Deleted"
+    except UserIsBlocked:
+        await clonedb.delete_user(int(user_id))
+        return False, "Blocked"
+    except PeerIdInvalid:
+        await clonedb.delete_user(int(user_id))
+        return False, "Error"
+    except Exception as e:
+        return False, "Error"
