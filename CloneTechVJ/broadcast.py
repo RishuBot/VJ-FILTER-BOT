@@ -28,7 +28,7 @@ async def pm_broadcast(bot, message):
         success = 0
         async for user in users:
             if 'id' in user:
-                pti, sh = await broadcast_messages(me.id, int(user['id']), b_msg)
+                pti, sh = await broadcast_messages(me.id, int(user['user_id']), b_msg)
                 if pti:
                     success += 1
                 elif pti == False:
@@ -74,4 +74,5 @@ async def broadcast_messages(bot_id, user_id, message):
         await clonedb.delete_user(bot_id, int(user_id))
         return False, "Error"
     except Exception as e:
+     #   await clonedb.delete_user(bot_id, int(user_id))
         return False, "Error"
