@@ -102,7 +102,7 @@ async def start(client, message):
             vj = await client.get_messages(PUBLIC_FILE_CHANNEL, k.id)
             mg = getattr(vj, vj.media.value)
             file_id = mg.file_id
-            files_ = await get_file_details(file_id)
+            files_ = await get_file_details(vj_file_id)
             files1 = files_[0]
             title = '@VJ_Botz  ' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files1.file_name.split()))
             size=get_size(files1.file_size)
