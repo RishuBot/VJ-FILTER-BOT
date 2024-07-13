@@ -97,11 +97,11 @@ async def start(client, message):
             return await message.reply('<b><i>No such file exist.</b></i>')
         filesarr = []
         for file in files:
-            file_id = file.file_id
-            k = await temp.BOT.send_cached_media(chat_id=PUBLIC_FILE_CHANNEL, file_id=file_id)
+            vj_file_id = file.file_id
+            k = await temp.BOT.send_cached_media(chat_id=PUBLIC_FILE_CHANNEL, file_id=vj_file_id)
             vj = await client.get_messages(PUBLIC_FILE_CHANNEL, k.id)
-            msg = getattr(vj, vj.media.value)
-            file_id = msg.file_id
+            mg = getattr(vj, vj.media.value)
+            file_id = mg.file_id
             files_ = await get_file_details(file_id)
             files1 = files_[0]
             title = '@VJ_Botz  ' + ' '.join(filter(lambda x: not x.startswith('[') and not x.startswith('@'), files1.file_name.split()))
