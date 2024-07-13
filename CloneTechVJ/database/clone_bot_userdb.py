@@ -8,7 +8,7 @@ class Database:
         self.db = self._client[database_name]
 
     async def add_user(self, bot_id, user_id):
-        user = {'user_id': user_id}
+        user = {'user_id': int(user_id)}
         await self.db[str(bot_id)].insert_one(user)
     
     async def is_user_exist(self, bot_id, id):
