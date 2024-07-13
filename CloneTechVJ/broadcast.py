@@ -27,7 +27,7 @@ async def pm_broadcast(bot, message):
         failed = 0
         success = 0
         async for user in users:
-            if 'id' in user:
+            if 'user_id' in user:
                 pti, sh = await broadcast_messages(me.id, int(user['user_id']), b_msg)
                 if pti:
                     success += 1
