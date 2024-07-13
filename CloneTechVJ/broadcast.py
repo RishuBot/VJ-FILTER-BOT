@@ -65,13 +65,13 @@ async def broadcast_messages(bot_id, user_id, message):
         await asyncio.sleep(e.x)
         return await broadcast_messages(bot_id, user_id, message)
     except InputUserDeactivated:
-        await clonedb.delete_user(bot_id, user_id)
+    #    await clonedb.delete_user(bot_id, user_id)
         return False, "Deleted"
     except UserIsBlocked:
-        await clonedb.delete_user(bot_id, user_id)
+      #  await clonedb.delete_user(bot_id, user_id)
         return False, "Blocked"
     except PeerIdInvalid:
-        await clonedb.delete_user(bot_id, user_id)
+    #    await clonedb.delete_user(bot_id, user_id)
         return False, "Error"
     except Exception as e:
      #   await clonedb.delete_user(bot_id, user_id)
