@@ -11,6 +11,7 @@
 ## Main Feature 
 <b>
   
+- [x] Clone Feature & On / Off 🔥
 - [x] Premium Plan Feature 
 - [x] Refer To Get Premium
 - [x] Ai Spell Check 
